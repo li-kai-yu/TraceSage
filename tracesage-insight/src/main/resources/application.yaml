@@ -1,0 +1,64 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: tracesage-insight
+  config:
+    import:
+      - optional:nacos:tracesage-insight.yaml
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+      config:
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+        file-extension: yaml
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:3306/tracesage?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:root}
+
+  elasticsearch:
+    uris: http://${ES_HOST:127.0.0.1}:9200
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.tracesage.insight.infrastructure.persistence.po
+  configuration:
+    map-underscore-to-camel-case: true
+
+# LangChain4j：默认对接阿里云百炼 OpenAI 兼容模式，可换成任意 OpenAI 协议模型
+langchain4j:
+  open-ai:
+    chat-model:
+      base-url: ${LLM_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode/v1}
+      api-key: ${LLM_API_KEY:}
+      model-name: qwen-plus
+      temperature: 0.2
+      log-requests: true
+      log-responses: true
+    embedding-model:
+      base-url: ${LLM_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode/v1}
+      api-key: ${LLM_API_KEY:}
+      model-name: text-embedding-v3
+      log-requests: false
+
+tracesage:
+  jwt:
+    header: Authorization
+    prefix: "Bearer "
+    secret: ${JWT_SECRET:tracesage-default-secret-please-change-in-production}
+  rag:
+    # 知识库召回条数
+    top-k: 5
+    # 相似度阈值
+    min-score: 0.7
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

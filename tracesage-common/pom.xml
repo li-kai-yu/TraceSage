@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.tracesage</groupId>
+        <artifactId>tracesage</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>tracesage-common</artifactId>
+    <packaging>pom</packaging>
+    <name>tracesage-common</name>
+    <description>公共能力聚合模块，仅做依赖聚合，不写业务代码</description>
+
+    <modules>
+        <module>tracesage-common-core</module>
+        <module>tracesage-common-web</module>
+        <module>tracesage-common-security</module>
+        <module>tracesage-common-data</module>
+        <module>tracesage-common-mq</module>
+        <module>tracesage-common-es</module>
+    </modules>
+</project>

@@ -1,0 +1,56 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: tracesage-gateway
+  config:
+    import:
+      - optional:nacos:tracesage-gateway.yaml
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+      config:
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+        file-extension: yaml
+    gateway:
+      # 关闭按服务名自动生成路由，统一在下方显式声明，避免路径冲突
+      discovery:
+        locator:
+          enabled: false
+      routes:
+        - id: tracesage-system
+          uri: lb://tracesage-system
+          predicates:
+            - Path=/api/system/**
+          filters:
+            - StripPrefix=2
+        - id: tracesage-insight
+          uri: lb://tracesage-insight
+          predicates:
+            - Path=/api/insight/**
+          filters:
+            - StripPrefix=2
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+
+# 网关白名单：无需登录即可访问的路径
+tracesage:
+  auth:
+    whitelist:
+      - /api/system/auth/login
+      - /api/system/auth/register
+      - /actuator/**
+  jwt:
+    header: Authorization
+    prefix: "Bearer "
+    secret: ${JWT_SECRET:tracesage-default-secret-please-change-in-production}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
